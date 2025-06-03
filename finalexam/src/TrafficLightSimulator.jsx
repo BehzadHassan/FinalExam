@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+
 const styles = {
     maincontainer: {
         backgroundColor: "#1e1e1e",
@@ -33,16 +35,47 @@ const styles = {
         marginBottom: "5px",
         marginTop: "5px",
     },
+    lightOn: {
+        red: {
+            backgroundColor: "red",
+            boxShadow: "0 0 25px 5px rgba(255, 0, 0, 0.8)",
+        },
+        yellow: {
+            backgroundColor: "yellow",
+            boxShadow: "0 0 25px 5px rgba(255, 255, 0, 0.8)",
+        },
+        green: {
+            backgroundColor: "limegreen",
+            boxShadow: "0 0 25px 5px rgba(0, 255, 0, 0.8)",
+        },
+    },
 };
 
 const TrafficLightSimulator = () => {
+
+    const [currentLight, setCurrentLight] = useState("red");
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentLight((prev) =>
+                prev === "red" ? "yellow" : prev === "yellow" ? "green" : "red"
+            );
+        }, 3000);
+        return () => clearInterval(interval);
+    }, []);
+
+    const getLightStyle = (color) => ({
+        ...styles.light,
+        ...(currentLight === color ? styles.lightOn[color] : {}),
+    });
+
     return (
         <div style={styles.maincontainer}>
             <h2 style={styles.title}>Traffic Light Simulator</h2>
             <div style={styles.trafficLightbody}>
-                <div style={styles.light} />
-                <div style={styles.light} />
-                <div style={styles.light} />
+                <div style={getLightStyle("red")} />
+                <div style={getLightStyle("yellow")} />
+                <div style={getLightStyle("green")} />
             </div>
         </div>
     );
